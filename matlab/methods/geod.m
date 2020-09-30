@@ -74,6 +74,7 @@ for tInd = 2:s.steps
             elseif strcmp(distOption,'angle_axis')
                 
                 % angle-axis update (2019 cdc paper)
+                % with built-in measurement averaging
                 omega = zeros(s.d,1);
                 for e = ind_m'
                     j = s.M(e,2);
@@ -81,7 +82,8 @@ for tInd = 2:s.steps
                     omega = omega + ...
                         logMap(rob(j).R_hat_d(:,:,tInd-1)) - ...
                         logMap(rob(i).R_hat_d(:,:,tInd-1)) - ...
-                        logMap(rob(i).y_R(:,ind_j,1));
+                        0.5*logMap(rob(i).y_R(:,ind_j,1)) + ...
+                        0.5*logMap(rob(j).y_R(:,ind_i,1));
                 end
                 % angle-axis dynamics
                 omega = gamma*omega;
@@ -96,7 +98,7 @@ for tInd = 2:s.steps
                 x_exp = hat(x_t_);
                 L_x_i = eye(s.d) + 0.5*theta*x_exp + beta*x_exp*x_exp;
                 % angle-axis discrete differentiation
-                axis_new = x_t + s.dt*(L_x_i*omega);
+                axis_new = x_t + gamma*(L_x_i*omega);
                 rob(i).R_hat_d(:,:,tInd) = expMap(axis_new);
                 
             else

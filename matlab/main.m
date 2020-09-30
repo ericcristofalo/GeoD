@@ -62,6 +62,8 @@ end
 
 % consensus-based distributed pose graph options include:
 % {'geod', 'angle_axis'};
+% Note that the angle-axis method typically takes many more 
+%   iterations to converge. You may need to increase s.steps. 
 distOption = 'geod';
 geod;
 
